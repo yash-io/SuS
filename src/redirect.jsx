@@ -11,8 +11,9 @@ const Redirect = () => {
       const q = query(collection(db, 'urls'), where('shortUrl', '==', shortCode));
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
-        const originalUrl = querySnapshot.docs[0].data().originalUrl;
-        window.location.href = originalUrl;
+        const originalUrl = querySnapshot.docs[0].data().url;
+        window.location.href = originalUrl.startsWith('http') ? originalUrl : `http://${originalUrl}`;
+        console.log('Redirecting to:', originalUrl);
       } else {
         console.error('Short URL not found');
       }

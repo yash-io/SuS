@@ -29,7 +29,7 @@ const Short = () => {
       return;
     }
 
-    const newShortUrl = generateShortUrl();
+    const newShortUrl =generateShortUrl();
     try {
       await addDoc(collection(db, "urls"), {
         url: url,
@@ -50,22 +50,22 @@ const Short = () => {
 
   return (
     <>
-      <div>
-        <h1>Short</h1>
+      <div className="flex justify-center items-center p-10 m-10 flex-col">
+        <h1 className="mb-4 block">Short</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={url}
             placeholder="Enter URL"
             onChange={(e) => setUrl(e.target.value)}
-            className="border-2 border-gray-300 p-2 w-1/2"
+            className="border-2 border-gray-300 p-2  mb-8 block"
             required
           />
-          <button type="submit">Shorten</button>
+          <button type="submit" className="bg-blue-500 border-2 rounded-md">Shorten</button>
         </form>
         {newUrl && (
           <p>
-            Short URL: <a href={newUrl}>{newUrl}</a>
+            Short URL: <a href={newUrl}>{`s-us.vercel.app/`+newUrl}</a>
           </p>
         )}
       </div>
