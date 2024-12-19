@@ -1,8 +1,63 @@
-# React + Vite
+# Sus - Short Un Short
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sus is a lightweight URL shortener built with React, Firebase, and Vite. It helps you convert long, messy URLs into short and shareable links quickly and efficiently.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
+
+Features
+
+Shorten long URLs instantly.
+
+Powered by Firebase for reliable backend services.
+
+
+
+---
+
+How to Use
+
+1. Paste the URL you want to shorten.
+
+
+2. Click the Shorten button.
+
+
+3. Copy the generated short link and share!
+
+
+
+
+---
+
+Tech Stack
+
+React: Frontend framework.
+
+Firebase: Backend services (Firestore, Authentication, Hosting).
+
+Vite: Fast development environment.
+
+
+
+---
+
+Setup
+
+1. Clone the repo:
+
+git clone https://github.com/your-username/sus.git  
+cd sus
+
+
+2. Install dependencies:
+
+npm install
+
+
+3. Add Firebase configuration in .env.
+
+
+4. Start the project:
+
+npm run dev
