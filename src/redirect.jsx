@@ -8,7 +8,7 @@ const Redirect = () => {
 
   useEffect(() => {
     const fetchUrl = async () => {
-      const q = query(collection(db, 'urls'), where('shortCode', '==', shortCode));
+      const q = query(collection(db, 'urls'), where('shortUrl', '==', shortCode));
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
         const originalUrl = querySnapshot.docs[0].data().originalUrl;

@@ -6,6 +6,12 @@ const Short = () => {
   const [url, setUrl] = useState("");
   const [newUrl, setNewUrl] = useState("");
 
+
+  const generateShortUrl = () => {
+    return Math.random().toString(36).substring(2, 8);
+  };
+
+
   const checkUrlExists = async (url) => {
     const q = query(collection(db, "urls"), where("url", "==", url));
     const querySnapshot = await getDocs(q);
@@ -13,10 +19,6 @@ const Short = () => {
       return querySnapshot.docs[0].data().shortUrl;
     }
     return null;
-  };
-
-  const generateShortUrl = () => {
-    return Math.random().toString(36).substring(2, 8);
   };
 
   const addUrl = async () => {
