@@ -56,27 +56,29 @@ const Short = () => {
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center p-10 m-10 flex-col">
-        <h1 className="mb-4 block">Short</h1>
+    <div className="flex justify-center items-center h-screen bg-black p-4">
+      <div className="border-2 border-white rounded-md bg-gray-200 p-6 w-full max-w-md h-1/3 mx-2">
+        <h1 className="mb-4 text-center text-2xl text-red-600 font-bold">Url-Shortener</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={url}
             placeholder="Enter URL"
             onChange={(e) => setUrl(e.target.value)}
-            className="border-2 border-gray-300 p-2  mb-8 block"
+            className="border-2 border-gray-300 p-2 mb-4 w-full"
             required
           />
-          <button type="submit" className="bg-blue-500 border-2 rounded-md">Shorten</button>
+          <div className="flex justify-center">
+            <button type="submit" className="bg-blue-500 border-2 rounded-md px-4 py-2 text-white">Short me</button>
+          </div>
         </form>
         {newUrl && (
-          <p>
-            Short URL: <a href={newUrl}>{`s-us.vercel.app/`+newUrl}</a>
+          <p className="mt-4 text-center">
+            Short URL: <a href={newUrl} className="text-blue-700 underline">{`https://s-sus.vercel.app/`+newUrl}</a>
           </p>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
