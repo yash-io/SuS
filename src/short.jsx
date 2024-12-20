@@ -6,23 +6,30 @@ const Short = () => {
   const [url, setUrl] = useState("");
   const [newUrl, setNewUrl] = useState("");
 
-
+  const originalUrl=url.toLowerCase();
   const generateShortUrl = () => {
-    return Math.random().toString(36).substring(2, 8);
+    return Math.random().toString(36).substring(2, 8).toLowerCase();
   };
 
 
   const checkUrlExists = async (url) => {
-    const q = query(collection(db, "urls"), where("url", "==", url));
+    const q = query(collection(db, "urls"), where("url", "==", originalUrl));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       return querySnapshot.docs[0].data().shortUrl;
+    }
+    const shortcode=originalUrl.slice(-6);
+    const qShort = query(collection(db, "urls"), where("shortUrl", "==", shortcode));
+    const queryShortSnapshot = await getDocs(qShort);
+    if (!queryShortSnapshot.empty) {
+      alert("Short URL already exists");
+      return queryShortSnapshot.docs[0].data().shortUrl;
     }
     return null;
   };
 
   const addUrl = async () => {
-    const exists = await checkUrlExists(url);
+    const exists = await checkUrlExists(originalUrl);
     if (exists) {
       setNewUrl(exists);
       console.log("found");
@@ -32,7 +39,7 @@ const Short = () => {
     const newShortUrl =generateShortUrl();
     try {
       await addDoc(collection(db, "urls"), {
-        url: url,
+        url: originalUrl,
         shortUrl: newShortUrl,
         timestamp: serverTimestamp(),
       });
