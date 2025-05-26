@@ -76,5 +76,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ---
 
-**Author:** [Your Name](https://github.com/your-username)  
-**Contact:** [your.email@example.com](mailto:your.email@example.com)
+**Author:** [Your Name](https://github.com/yash-io)  
