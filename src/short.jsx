@@ -8,12 +8,14 @@ import {
   where,
   serverTimestamp,
 } from "firebase/firestore";
+import validator from "validator";
 
 const Short = () => {
   const [url, setUrl] = useState("");
   const [customName, setCustomName] = useState("");
   const [newUrl, setNewUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [validating, setValidating] = useState(false);
 
   const generateShortUrl = (originalUrl) => {
     let hash = 5381;
@@ -23,22 +25,19 @@ const Short = () => {
     return (hash >>> 0).toString(36).substring(0, 6);
   };
 
- const normalizeUrl = (inputUrl) => {
-  let finalUrl = inputUrl.trim();
+  const normalizeUrl = (inputUrl) => {
+    let finalUrl = inputUrl.trim();
 
-  // If user didn't enter a protocol, assume https
-  if (!/^https?:\/\//i.test(finalUrl)) {
-    finalUrl = "https://" + finalUrl;
-  }
+    if (!/^https?:\/\//i.test(finalUrl)) {
+      finalUrl = "https://" + finalUrl;
+    }
 
-  try {
-    const urlObj = new URL(finalUrl);
-    return urlObj.href.toLowerCase();
-  } catch (e) {
-    alert("Please enter a valid URL.");
-    return null;
-  }
-};
+    if (validator.isURL(finalUrl, { require_protocol: true })) {
+      return finalUrl.toLowerCase();
+    } else {
+      return null;
+    }
+  };
 
   const checkUrlExists = async (originalUrl, shortUrl) => {
     const q = query(collection(db, "urls"), where("url", "==", originalUrl));
@@ -84,12 +83,17 @@ const Short = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setValidating(true);
     const normalized = normalizeUrl(url);
-    if (normalized) {
-      addUrl(normalized);
+    if (!normalized) {
+      alert("Please enter a valid URL.");
+      setValidating(false);
+      return;
     }
+    await addUrl(normalized);
+    setValidating(false);
   };
 
   const handleCopy = () => {
@@ -119,6 +123,7 @@ const Short = () => {
               onChange={(e) => setUrl(e.target.value)}
               className="rounded-lg p-3 bg-gray-700 text-white focus:ring-2 focus:ring-blue-400 outline-none"
               required
+              disabled={validating}
             />
           </div>
 
@@ -130,14 +135,16 @@ const Short = () => {
               placeholder="custom-name"
               onChange={(e) => setCustomName(e.target.value)}
               className="rounded-lg p-3 bg-gray-700 text-white focus:ring-2 focus:ring-blue-400 outline-none"
+              disabled={validating}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-indigo-500 hover:to-blue-500 text-white py-2.5 font-bold rounded-lg shadow-md transition-transform transform hover:scale-105"
+            className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-indigo-500 hover:to-blue-500 text-white py-2.5 font-bold rounded-lg shadow-md transition-transform transform hover:scale-105 disabled:opacity-50"
+            disabled={validating}
           >
-            ✨ Shorten It!
+            {validating ? "Validating..." : "✨ Shorten It!"}
           </button>
         </form>
 
