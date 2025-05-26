@@ -13,8 +13,6 @@ SuS is a smart, modern URL shortener built with **React**, **Vite**, and **Fireb
 
 Try it live: [https://s-us.vercel.app](https://s-us.vercel.app)
 
-<!-- Add a screenshot here if you have one -->
-<!-- ![SuS Screenshot](screenshot.png) -->
 
 ## Getting Started
 
@@ -28,7 +26,7 @@ Try it live: [https://s-us.vercel.app](https://s-us.vercel.app)
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/your-username/sus.git
+    git clone https://github.com/yash-io/SuS.git
     cd sus
     ```
 
