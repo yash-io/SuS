@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  serverTimestamp,
+} from "firebase/firestore";
 
 const Short = () => {
   const [url, setUrl] = useState("");
@@ -19,16 +26,17 @@ const Short = () => {
   };
 
   const checkUrlExists = async (originalUrl, shortUrl) => {
-    // Check if the original URL already exists
     const q = query(collection(db, "urls"), where("url", "==", originalUrl));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       return querySnapshot.docs[0].data().shortUrl;
     }
 
-    // Check if the custom short URL already exists
     if (shortUrl) {
-      const qShort = query(collection(db, "urls"), where("shortUrl", "==", shortUrl));
+      const qShort = query(
+        collection(db, "urls"),
+        where("shortUrl", "==", shortUrl)
+      );
       const queryShortSnapshot = await getDocs(qShort);
       if (!queryShortSnapshot.empty) {
         alert("This custom name is already taken. Please choose another one.");
@@ -41,7 +49,10 @@ const Short = () => {
 
   const addUrl = async () => {
     const shortUrl = customName || generateShortUrl(originalUrl);
-    const exists = await checkUrlExists(originalUrl, customName ? customName : null);
+    const exists = await checkUrlExists(
+      originalUrl,
+      customName ? customName : null
+    );
     if (exists) {
       setNewUrl(exists);
       console.log("URL already exists.");
@@ -80,50 +91,58 @@ const Short = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-900 text-white p-4">
-      <div className="border-2 border-gray-700 rounded-md bg-gray-800 p-6 w-full max-w-md">
-        <h1 className="mb-4 text-center text-2xl text-red-500 font-bold">URL Shortener</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            value={url}
-            placeholder="Enter URL"
-            onChange={(e) => setUrl(e.target.value)}
-            className="border border-gray-600 bg-gray-700 p-3 rounded-md w-full text-sm text-white"
-            required
-          />
-          <input
-            type="text"
-            value={customName}
-            placeholder="Enter Custom Name (optional)"
-            onChange={(e) => setCustomName(e.target.value)}
-            className="border border-gray-600 bg-gray-700 p-3 rounded-md w-full text-sm text-white"
-          />
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-4">
+      <div className="bg-gray-850 border border-gray-700 rounded-2xl shadow-2xl p-8 w-full max-w-lg backdrop-blur-md">
+        <h1 className="text-3xl font-extrabold text-center text-blue-400 mb-6">🔗 Smart URL Shortener</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm text-gray-300">Enter Original URL</label>
+            <input
+              type="url"
+              value={url}
+              placeholder="https://example.com"
+              onChange={(e) => setUrl(e.target.value)}
+              className="rounded-lg p-3 bg-gray-700 text-white focus:ring-2 focus:ring-blue-400 outline-none"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm text-gray-300">Custom Name (Optional)</label>
+            <input
+              type="text"
+              value={customName}
+              placeholder="custom-name"
+              onChange={(e) => setCustomName(e.target.value)}
+              className="rounded-lg p-3 bg-gray-700 text-white focus:ring-2 focus:ring-blue-400 outline-none"
+            />
+          </div>
+
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+            className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-indigo-500 hover:to-blue-500 text-white py-2.5 font-bold rounded-lg shadow-md transition-transform transform hover:scale-105"
           >
-            Shorten URL
+            ✨ Shorten It!
           </button>
         </form>
+
         {newUrl && (
-          <div className="mt-6 text-center">
-            <p>
-              Short URL:{" "}
-              <a
-                href={`https://s-us.vercel.app/${newUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 underline"
-              >
-                https://s-us.vercel.app/{newUrl}
-              </a>
-            </p>
+          <div className="mt-6 bg-gray-700 p-4 rounded-lg text-center animate-fade-in">
+            <p className="text-lg font-semibold mb-2">Here’s your short URL:</p>
+            <a
+              href={`https://s-us.vercel.app/${newUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-300 underline hover:text-blue-400"
+            >
+              https://s-us.vercel.app/{newUrl}
+            </a>
             <button
               onClick={handleCopy}
-              className="mt-4 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md"
+              className="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
             >
-              {copied ? "Copied!" : "Copy to Clipboard"}
+              {copied ? "✅ Copied!" : "📋 Copy to Clipboard"}
             </button>
           </div>
         )}
