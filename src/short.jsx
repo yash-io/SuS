@@ -23,19 +23,22 @@ const Short = () => {
     return (hash >>> 0).toString(36).substring(0, 6);
   };
 
-  const normalizeUrl = (url) => {
-    try {
-      const parsed = new URL(url);
-      return parsed.href.toLowerCase();
-    } catch (e) {
-      try {
-        return new URL("https://" + url).href.toLowerCase();
-      } catch (err) {
-        alert("Please enter a valid URL.");
-        return null;
-      }
-    }
-  };
+ const normalizeUrl = (inputUrl) => {
+  let finalUrl = inputUrl.trim();
+
+  // If user didn't enter a protocol, assume https
+  if (!/^https?:\/\//i.test(finalUrl)) {
+    finalUrl = "https://" + finalUrl;
+  }
+
+  try {
+    const urlObj = new URL(finalUrl);
+    return urlObj.href.toLowerCase();
+  } catch (e) {
+    alert("Please enter a valid URL.");
+    return null;
+  }
+};
 
   const checkUrlExists = async (originalUrl, shortUrl) => {
     const q = query(collection(db, "urls"), where("url", "==", originalUrl));
