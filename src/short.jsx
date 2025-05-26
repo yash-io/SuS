@@ -113,7 +113,7 @@ const Short = () => {
           <div className="flex flex-col">
             <label className="mb-1 text-sm text-gray-300">Enter Original URL</label>
             <input
-              type="url"
+              type="text"
               value={url}
               placeholder="https://example.com"
               onChange={(e) => setUrl(e.target.value)}
