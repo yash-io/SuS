@@ -15,14 +15,26 @@ const Short = () => {
   const [newUrl, setNewUrl] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const originalUrl = url.toLowerCase();
-
   const generateShortUrl = (originalUrl) => {
     let hash = 5381;
     for (let i = 0; i < originalUrl.length; i++) {
       hash = (hash * 33) ^ originalUrl.charCodeAt(i);
     }
     return (hash >>> 0).toString(36).substring(0, 6);
+  };
+
+  const normalizeUrl = (url) => {
+    try {
+      const parsed = new URL(url);
+      return parsed.href.toLowerCase();
+    } catch (e) {
+      try {
+        return new URL("https://" + url).href.toLowerCase();
+      } catch (err) {
+        alert("Please enter a valid URL.");
+        return null;
+      }
+    }
   };
 
   const checkUrlExists = async (originalUrl, shortUrl) => {
@@ -47,15 +59,11 @@ const Short = () => {
     return null;
   };
 
-  const addUrl = async () => {
+  const addUrl = async (originalUrl) => {
     const shortUrl = customName || generateShortUrl(originalUrl);
-    const exists = await checkUrlExists(
-      originalUrl,
-      customName ? customName : null
-    );
+    const exists = await checkUrlExists(originalUrl, customName ? customName : null);
     if (exists) {
       setNewUrl(exists);
-      console.log("URL already exists.");
       return;
     }
 
@@ -75,7 +83,10 @@ const Short = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addUrl();
+    const normalized = normalizeUrl(url);
+    if (normalized) {
+      addUrl(normalized);
+    }
   };
 
   const handleCopy = () => {
@@ -128,22 +139,24 @@ const Short = () => {
         </form>
 
         {newUrl && (
-          <div className="mt-6 bg-gray-700 p-4 rounded-lg text-center animate-fade-in">
-            <p className="text-lg font-semibold mb-2">Here’s your short URL:</p>
-            <a
-              href={`https://s-us.vercel.app/${newUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-300 underline hover:text-blue-400"
-            >
-              https://s-us.vercel.app/{newUrl}
-            </a>
-            <button
-              onClick={handleCopy}
-              className="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
-            >
-              {copied ? "✅ Copied!" : "📋 Copy to Clipboard"}
-            </button>
+          <div className="mt-6 bg-gray-700 p-4 rounded-lg text-center animate-fade-in space-y-4">
+            <p className="text-lg font-semibold">Here’s your short URL:</p>
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+              <a
+                href={`https://s-us.vercel.app/${newUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-300 underline break-all hover:text-blue-400 text-center"
+              >
+                https://s-us.vercel.app/{newUrl}
+              </a>
+              <button
+                onClick={handleCopy}
+                className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+              >
+                {copied ? "✅ Copied!" : "📋 Copy"}
+              </button>
+            </div>
           </div>
         )}
       </div>
