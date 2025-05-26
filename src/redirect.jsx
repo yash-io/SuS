@@ -22,7 +22,30 @@ const Redirect = () => {
     fetchUrl();
   }, [shortCode]);
 
-  return <p>Redirecting...</p>;
+  return (
+    <div
+      className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-500 to-purple-600 text-white text-center p-4"
+    >
+      <div className="animate-bounce">
+        <svg
+          className="w-16 h-16 mx-auto mb-4 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M14.828 9.172a4 4 0 010 5.656M9.172 14.828a4 4 0 010-5.656m5.656 5.656a4 4 0 01-5.656 0m5.656-5.656a4 4 0 00-5.656 0"
+          />
+        </svg>
+        <h1 className="text-2xl font-bold">Hang Tight!</h1>
+        <p className="mt-2">We're redirecting you to the original URL...</p>
+      </div>
+    </div>
+  );
 };
 
 export default Redirect;
