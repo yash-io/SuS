@@ -74,4 +74,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ---
 
-**Author:** [Your Name](https://github.com/yash-io)  
+**Author:** (https://github.com/yash-io)  
