@@ -24,7 +24,7 @@ const Redirect = () => {
 
   return (
     <div
-      className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-500 to-purple-600 text-white text-center p-4"
+      className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white text-center p-4"
     >
       <div className="animate-bounce">
         <svg
