@@ -56,7 +56,7 @@ const Short = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#232526] to-[#333] font-sans">
       <div className="max-w-lg w-full p-8 rounded-xl shadow-2xl bg-[#19191c]/95 border-2 border-[#444]">
-        <h2 className="text-3xl font-bold mb-4 text-center font-handwriting">🔗 URL Shortener</h2>
+        <h2 className="text-white text-3xl font-bold mb-4 text-center font-handwriting">🔗 URL Shortener</h2>
         <button
           className="w-full mb-6 py-3 rounded-lg shadow font-handwriting bg-gradient-to-r from-sky-400 to-cyan-700 text-white text-lg border-2 border-cyan-700 hover:scale-105 active:scale-95 duration-150"
           onClick={() => navigate("/text")}
