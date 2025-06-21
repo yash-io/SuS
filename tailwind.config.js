@@ -10,8 +10,8 @@ export default {
        'xss': '300px',
      },
      fontFamily: {
-      handwriting: ['"Shadows Into Light"', 'cursive'],
-    },
+  handwriting: ['"Caveat"', 'cursive'],
+},
    },
  },
  plugins: [],
