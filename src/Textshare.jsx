@@ -8,11 +8,7 @@ import {
   where,
   serverTimestamp,
 } from "firebase/firestore";
-
-const fontLink = document.createElement("link");
-fontLink.href = "https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap";
-fontLink.rel = "stylesheet";
-document.head.appendChild(fontLink);
+import { useNavigate } from "react-router-dom";
 
 const generateShortCode = (text) => {
   let hash = 5381;
@@ -27,6 +23,7 @@ const TextShare = () => {
   const [shortCode, setShortCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const createShortText = async () => {
     setLoading(true);
@@ -57,36 +54,17 @@ const TextShare = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{
-        background: "linear-gradient(135deg, #232526 0%, #333 100%)",
-        color: "#f3f3f3",
-        fontFamily: "'Segoe UI', 'Shadows Into Light', cursive, sans-serif",
-      }}
-    >
-      <div
-        className="max-w-lg w-full p-8 rounded-xl shadow-2xl"
-        style={{
-          background: "rgba(25, 25, 28, 0.95)",
-          border: "2px solid #444",
-        }}
-      >
-        <h2
-          className="text-3xl font-bold mb-4 text-center"
-          style={{ fontFamily: "'Shadows Into Light', cursive" }}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#232526] to-[#333] font-sans">
+      <div className="max-w-lg w-full p-8 rounded-xl shadow-2xl bg-[#19191c]/95 border-2 border-[#444]">
+        <h2 className="text-3xl font-bold mb-4 text-center font-handwriting">✍️ Text Shortener</h2>
+        <button
+          className="w-full mb-6 py-3 rounded-lg shadow font-handwriting bg-gradient-to-r from-orange-300 to-orange-600 text-black text-lg border-2 border-orange-400 hover:scale-105 active:scale-95 duration-150"
+          onClick={() => navigate("/")}
         >
-          ✍️ Text Shortener
-        </h2>
+          🔗 Go to URL Shortener
+        </button>
         <textarea
-          className="w-full p-3 mb-4 rounded-md shadow-sm resize-vertical"
-          style={{
-            background: "#2e2e2e",
-            color: "#f3f3f3",
-            border: "2px solid #656565",
-            fontFamily: "'Segoe UI', 'Shadows Into Light', cursive",
-            minHeight: "120px",
-          }}
+          className="w-full p-3 mb-4 rounded-md shadow-sm resize-vertical bg-[#2e2e2e] text-[#f3f3f3] border-2 border-[#656565] font-handwriting placeholder:italic placeholder:text-gray-400 min-h-[120px]"
           rows={8}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -95,75 +73,28 @@ const TextShare = () => {
         <button
           onClick={createShortText}
           disabled={loading || !text}
-          style={{
-            background:
-              "linear-gradient(90deg, #f2a154 0%, #ff7b54 100%)",
-            color: "#232526",
-            boxShadow: "2px 3px 5px rgba(0,0,0,0.21)",
-            border: "2px solid #e07a5f",
-            borderRadius: "10px",
-            padding: "10px 24px",
-            fontWeight: "bold",
-            fontFamily: "'Shadows Into Light', cursive",
-            fontSize: "1.25rem",
-            cursor: loading || !text ? "not-allowed" : "pointer",
-            opacity: loading || !text ? 0.6 : 1,
-            transition: "all 0.15s",
-            marginBottom: "1.5rem",
-            marginTop: "0.5rem",
-            display: "block",
-            width: "100%",
-          }}
+          className={`w-full py-3 rounded-lg mt-2 font-handwriting text-lg border-2 border-orange-400 bg-gradient-to-r from-orange-300 to-orange-500 text-black shadow hover:scale-105 active:scale-95 duration-150 ${
+            loading || !text ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           {loading ? "Processing..." : "Generate Short Link"}
         </button>
         {shortCode && (
-          <div
-            className="mt-6 flex flex-col items-center"
-            style={{
-              background: "#242628",
-              borderRadius: "13px",
-              padding: "1.2rem",
-              border: "2px dashed #ffb26b",
-              color: "#ffb26b",
-              fontFamily: "'Shadows Into Light', cursive",
-              marginTop: "2rem",
-            }}
-          >
+          <div className="mt-8 flex flex-col items-center bg-[#242628] border-2 border-dashed border-orange-300 rounded-xl p-5 font-handwriting text-orange-300">
             <span>Your share link:</span>
             <a
               href={`/text/${shortCode}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                color: "#f2a154",
-                textDecoration: "underline",
-                fontSize: "1.05rem",
-                margin: "0.5rem 0",
-                wordBreak: "break-all",
-              }}
+              className="text-orange-400 underline break-all my-2 text-base"
             >
               {window.location.origin}/text/{shortCode}
             </a>
             <button
               onClick={handleCopy}
-              style={{
-                marginTop: "0.5rem",
-                background: copied
-                  ? "linear-gradient(90deg, #a8e063 0%, #56ab2f 100%)"
-                  : "linear-gradient(90deg, #ffb26b 0%, #f2a154 100%)",
-                color: "#232526",
-                border: "2px solid #e07a5f",
-                borderRadius: "8px",
-                padding: "8px 20px",
-                fontWeight: "bold",
-                fontFamily: "'Shadows Into Light', cursive",
-                fontSize: "1.05rem",
-                boxShadow: "1px 2px 5px rgba(0,0,0,0.21)",
-                cursor: "pointer",
-                transition: "all 0.15s",
-                outline: "none",
-              }}
+              className={`mt-2 px-6 py-2 rounded-lg border-2 border-orange-400 bg-gradient-to-r from-orange-200 to-orange-300 text-black shadow font-handwriting hover:scale-105 active:scale-95 duration-150 ${
+                copied ? "bg-gradient-to-r from-green-300 to-green-500 border-green-700 text-green-900" : ""
+              }`}
             >
               {copied ? "Copied!" : "Copy Link"}
             </button>
