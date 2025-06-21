@@ -9,6 +9,9 @@ export default {
        'xs': '475px',
        'xss': '300px',
      },
+     fontFamily: {
+      handwriting: ['"Shadows Into Light"', 'cursive'],
+    },
    },
  },
  plugins: [],
