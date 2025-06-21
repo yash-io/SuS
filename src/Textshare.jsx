@@ -69,25 +69,26 @@ const TextShare = () => {
         {loading ? "Processing..." : "Generate Short Link"}
       </button>
       {shortCode && (
-        <div className="mt-4">
-          <div className="mb-2">
-            <a
-              href={`/${shortCode}`}
-              className="text-blue-600 underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {window.location.origin}/{shortCode}
-            </a>
-          </div>
-          <button
-            onClick={handleCopy}
-            className="bg-green-500 text-white px-3 py-1 rounded"
-          >
-            {copied ? "Copied!" : "Copy Link"}
-          </button>
-        </div>
-      )}
+  <div>
+    <span>Your share link: </span>
+    <a
+      href={`/text/${shortCode}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 underline"
+    >
+      {window.location.origin}/text/{shortCode}
+    </a>
+    <button
+      onClick={() =>
+        navigator.clipboard.writeText(`${window.location.origin}/text/${shortCode}`)
+      }
+      className="ml-2 px-2 py-1 bg-gray-200 rounded"
+    >
+      Copy Link
+    </button>
+  </div>
+)}
     </div>
   );
 };
