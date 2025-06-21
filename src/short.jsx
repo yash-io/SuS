@@ -8,165 +8,96 @@ import {
   where,
   serverTimestamp,
 } from "firebase/firestore";
-import validator from "validator";
+import { useNavigate } from "react-router-dom";
+
+const generateShortCode = (url) => {
+  let hash = 5381;
+  for (let i = 0; i < url.length; i++) {
+    hash = (hash * 33) ^ url.charCodeAt(i);
+  }
+  return (hash >>> 0).toString(36).substring(0, 6);
+};
 
 const Short = () => {
   const [url, setUrl] = useState("");
-  const [customName, setCustomName] = useState("");
-  const [newUrl, setNewUrl] = useState("");
+  const [shortCode, setShortCode] = useState("");
   const [copied, setCopied] = useState(false);
-  const [validating, setValidating] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const generateShortUrl = (originalUrl) => {
-    let hash = 5381;
-    for (let i = 0; i < originalUrl.length; i++) {
-      hash = (hash * 33) ^ originalUrl.charCodeAt(i);
-    }
-    return (hash >>> 0).toString(36).substring(0, 6);
-  };
-
-  const normalizeUrl = (inputUrl) => {
-    let finalUrl = inputUrl.trim();
-
-    if (!/^https?:\/\//i.test(finalUrl)) {
-      finalUrl = "https://" + finalUrl;
-    }
-
-    if (validator.isURL(finalUrl, { require_protocol: true })) {
-      return finalUrl.toLowerCase();
-    } else {
-      return null;
-    }
-  };
-
-  const checkUrlExists = async (originalUrl, shortUrl) => {
-    const q = query(collection(db, "urls"), where("url", "==", originalUrl));
+  const createShortUrl = async () => {
+    setLoading(true);
+    const code = generateShortCode(url);
+    const q = query(collection(db, "urls"), where("shortCode", "==", code));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].data().shortUrl;
-    }
-
-    if (shortUrl) {
-      const qShort = query(
-        collection(db, "urls"),
-        where("shortUrl", "==", shortUrl)
-      );
-      const queryShortSnapshot = await getDocs(qShort);
-      if (!queryShortSnapshot.empty) {
-        alert("This custom name is already taken. Please choose another one.");
-        return null;
-      }
-    }
-
-    return null;
-  };
-
-  const addUrl = async (originalUrl) => {
-    const shortUrl = customName || generateShortUrl(originalUrl);
-    const exists = await checkUrlExists(originalUrl, customName ? customName : null);
-    if (exists) {
-      setNewUrl(exists);
+      setShortCode(code);
+      setLoading(false);
       return;
     }
-
-    try {
-      await addDoc(collection(db, "urls"), {
-        url: originalUrl,
-        shortUrl,
-        timestamp: serverTimestamp(),
-      });
-      setUrl("");
-      setCustomName("");
-      setNewUrl(shortUrl);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setValidating(true);
-    const normalized = normalizeUrl(url);
-    if (!normalized) {
-      alert("Please enter a valid URL.");
-      setValidating(false);
-      return;
-    }
-    await addUrl(normalized);
-    setValidating(false);
+    await addDoc(collection(db, "urls"), {
+      url,
+      shortCode: code,
+      timestamp: serverTimestamp(),
+    });
+    setShortCode(code);
+    setLoading(false);
   };
 
   const handleCopy = () => {
     navigator.clipboard
-      .writeText("https://s-us.vercel.app/" + newUrl)
+      .writeText(`${window.location.origin}/${shortCode}`)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-      })
-      .catch((error) => {
-        console.error("Failed to copy: ", error);
       });
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-4">
-      <div className="bg-gray-850 border border-gray-700 rounded-2xl shadow-2xl p-8 w-full max-w-lg backdrop-blur-md">
-        <h1 className="text-3xl font-extrabold text-center text-blue-400 mb-6">🔗 Smart URL Shortener</h1>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="flex flex-col">
-            <label className="mb-1 text-sm text-gray-300">Enter Original URL</label>
-            <input
-              type="text"
-              value={url}
-              placeholder="https://example.com"
-              onChange={(e) => setUrl(e.target.value)}
-              className="rounded-lg p-3 bg-gray-700 text-white focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-              disabled={validating}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="mb-1 text-sm text-gray-300">Custom Name (Optional)</label>
-            <input
-              type="text"
-              value={customName}
-              placeholder="custom-name"
-              onChange={(e) => setCustomName(e.target.value)}
-              className="rounded-lg p-3 bg-gray-700 text-white focus:ring-2 focus:ring-blue-400 outline-none"
-              disabled={validating}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-indigo-500 hover:to-blue-500 text-white py-2.5 font-bold rounded-lg shadow-md transition-transform transform hover:scale-105 disabled:opacity-50"
-            disabled={validating}
-          >
-            {validating ? "Validating..." : "✨ Shorten It!"}
-          </button>
-        </form>
-
-        {newUrl && (
-          <div className="mt-6 bg-gray-700 p-4 rounded-lg text-center animate-fade-in space-y-4">
-            <p className="text-lg font-semibold">Here’s your short URL:</p>
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-              <a
-                href={`https://s-us.vercel.app/${newUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-300 underline break-all hover:text-blue-400 text-center"
-              >
-                https://s-us.vercel.app/{newUrl}
-              </a>
-              <button
-                onClick={handleCopy}
-                className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
-              >
-                {copied ? "✅ Copied!" : "📋 Copy"}
-              </button>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#232526] to-[#333] font-sans">
+      <div className="max-w-lg w-full p-8 rounded-xl shadow-2xl bg-[#19191c]/95 border-2 border-[#444]">
+        <h2 className="text-3xl font-bold mb-4 text-center font-handwriting">🔗 URL Shortener</h2>
+        <button
+          className="w-full mb-6 py-3 rounded-lg shadow font-handwriting bg-gradient-to-r from-sky-400 to-cyan-700 text-white text-lg border-2 border-cyan-700 hover:scale-105 active:scale-95 duration-150"
+          onClick={() => navigate("/text")}
+        >
+          ✍️ Text shortener
+        </button>
+        <input
+          className="w-full p-3 mb-4 rounded-md shadow-sm bg-[#2e2e2e] text-[#f3f3f3] border-2 border-[#656565] font-handwriting placeholder:italic placeholder:text-gray-400"
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Paste your long URL here…"
+        />
+        <button
+          onClick={createShortUrl}
+          disabled={loading || !url}
+          className={`w-full py-3 rounded-lg mt-2 font-handwriting text-lg border-2 border-orange-400 bg-gradient-to-r from-orange-300 to-orange-500 text-black shadow hover:scale-105 active:scale-95 duration-150 ${
+            loading || !url ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          {loading ? "Processing..." : "Generate Short Link"}
+        </button>
+        {shortCode && (
+          <div className="mt-8 flex flex-col items-center bg-[#242628] border-2 border-dashed border-orange-300 rounded-xl p-5 font-handwriting text-orange-300">
+            <span>Your share link:</span>
+            <a
+              href={`/${shortCode}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-orange-400 underline break-all my-2 text-base"
+            >
+              {window.location.origin}/{shortCode}
+            </a>
+            <button
+              onClick={handleCopy}
+              className={`mt-2 px-6 py-2 rounded-lg border-2 border-orange-400 bg-gradient-to-r from-orange-200 to-orange-300 text-black shadow font-handwriting hover:scale-105 active:scale-95 duration-150 ${
+                copied ? "bg-gradient-to-r from-green-300 to-green-500 border-green-700 text-green-900" : ""
+              }`}
+            >
+              {copied ? "Copied!" : "Copy Link"}
+            </button>
           </div>
         )}
       </div>
