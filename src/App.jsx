@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import {BrowserRouter as Router, Route,Routes} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Short from './short'
 import Unshort from './Unshort'
 import Redirect from './redirect'
+import TextShare from './Textshare'
+import TextView from './TextView'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -11,17 +13,18 @@ function App() {
     <>
       <div>
         <Router>
-          <Routes> 
-              <Route path='/' element={<Short/>} ></Route>      
-              <Route path='/short' element={<Short/>} ></Route>
-              <Route path='/unshort' element={<Unshort/>} ></Route>
-              <Route path='/:shortCode' element={<Redirect/>} ></Route>
+          <Routes>
+            <Route path='/' element={<Short />} />
+            <Route path='/short' element={<Short />} />
+            <Route path='/unshort' element={<Unshort />} />
+            <Route path='/:shortCode' element={<Redirect />} />
+            <Route path='/text' element={<TextShare />} />
+            <Route path='/text/:shortCode' element={<TextView />} />
           </Routes>
-
         </Router>
       </div>
     </>
   )
 }
 
-export default App
+export default App;
