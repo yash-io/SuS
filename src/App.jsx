@@ -4,7 +4,7 @@ import Short from './short'
 import Unshort from './Unshort'
 import Redirect from './redirect'
 import TextShare from './Textshare'
-import TextView from './TextView'
+import TextView from './Textview'
 
 function App() {
   const [count, setCount] = useState(0)
