@@ -54,17 +54,21 @@ const TextShare = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#232526] to-[#333] font-sans">
-      <div className="max-w-lg w-full p-8 rounded-xl shadow-2xl bg-[#19191c]/95 border-2 border-[#444]">
-        <h2 className="text-3xl font-bold mb-4 text-center font-handwriting">✍️ Text Shortener</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 to-neutral-800 font-mono">
+      <div className="max-w-lg w-full p-8 rounded-xl shadow-2xl bg-neutral-900/95 border-2 border-neutral-700">
+        {/* Back Button */}
         <button
-          className="w-full mb-6 py-3 rounded-lg shadow font-handwriting bg-gradient-to-r from-orange-300 to-orange-600 text-black text-lg border-2 border-orange-400 hover:scale-105 active:scale-95 duration-150"
+          className="mb-6 px-4 py-2 rounded-lg border-2 border-blue-500 bg-neutral-800 text-blue-400 font-mono shadow hover:bg-neutral-700 hover:text-blue-300 transition duration-150"
           onClick={() => navigate("/")}
         >
-          🔗 Go to URL Shortener
+          ← Back to URL Shortener
         </button>
+
+        <h2 className="text-2xl font-bold mb-4 text-center text-neutral-100 font-mono">
+          Text Shortener
+        </h2>
         <textarea
-          className="w-full p-3 mb-4 rounded-md shadow-sm resize-vertical bg-[#2e2e2e] text-[#f3f3f3] border-2 border-[#656565] font-handwriting placeholder:italic placeholder:text-gray-400 min-h-[120px]"
+          className="w-full p-3 mb-4 rounded-md shadow-sm bg-neutral-800 text-neutral-100 border-2 border-neutral-600 font-mono placeholder:text-neutral-400 min-h-[120px] resize-vertical focus:outline-none focus:border-blue-500"
           rows={8}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -73,27 +77,27 @@ const TextShare = () => {
         <button
           onClick={createShortText}
           disabled={loading || !text}
-          className={`w-full py-3 rounded-lg mt-2 font-handwriting text-lg border-2 border-orange-400 bg-gradient-to-r from-orange-300 to-orange-500 text-black shadow hover:scale-105 active:scale-95 duration-150 ${
+          className={`w-full py-3 rounded-lg mt-2 font-mono text-base border-2 border-blue-400 bg-blue-600 text-white shadow hover:bg-blue-500 hover:border-blue-300 transition duration-150 ${
             loading || !text ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
           {loading ? "Processing..." : "Generate Short Link"}
         </button>
         {shortCode && (
-          <div className="mt-8 flex flex-col items-center bg-[#242628] border-2 border-dashed border-orange-300 rounded-xl p-5 font-handwriting text-orange-300">
+          <div className="mt-8 flex flex-col items-center bg-neutral-800 border-2 border-dashed border-blue-300 rounded-xl p-5 font-mono text-blue-200">
             <span>Your share link:</span>
             <a
               href={`/text/${shortCode}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-orange-400 underline break-all my-2 text-base"
+              className="text-blue-400 underline break-all my-2 text-base"
             >
               {window.location.origin}/text/{shortCode}
             </a>
             <button
               onClick={handleCopy}
-              className={`mt-2 px-6 py-2 rounded-lg border-2 border-orange-400 bg-gradient-to-r from-orange-200 to-orange-300 text-black shadow font-handwriting hover:scale-105 active:scale-95 duration-150 ${
-                copied ? "bg-gradient-to-r from-green-300 to-green-500 border-green-700 text-green-900" : ""
+              className={`mt-2 px-6 py-2 rounded-lg border-2 border-blue-400 bg-blue-200 text-blue-900 shadow font-mono hover:bg-blue-300 hover:border-blue-500 transition duration-150 ${
+                copied ? "bg-green-300 border-green-500 text-green-900" : ""
               }`}
             >
               {copied ? "Copied!" : "Copy Link"}
